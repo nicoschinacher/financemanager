@@ -26,7 +26,7 @@ public class Controller {
         this.homeFrame = new HomeFrame(controllerInterface);
         this.setupScheduledTask();
     }
-    public ControllerInterface initializeInterface() {
+    private ControllerInterface initializeInterface() {
         return new ControllerInterface() {
             @Override
             public void launchPerformanceUI() {

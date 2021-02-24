@@ -12,7 +12,7 @@
     <orderEntry type="library" name="org.apache.poi:poi-ooxml:4.1.1" level="project" />
     <orderEntry type="library" name="org.xerial:sqlite-jdbc:3.34.0" level="project" />
     <orderEntry type="library" name="org.jfree:jfreechart:1.5.2" level="project" />
-    <orderEntry type="module-library" scope="PROVIDED">
+    <orderEntry type="module-library">
       <library name="JUnit5.4">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.4.2/junit-jupiter-5.4.2.jar!/" />
@@ -28,7 +28,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="PROVIDED">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.4.2/junit-jupiter-5.4.2.jar!/" />
@@ -44,5 +44,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="org.mockito:junit-jupiter:2.20.0" level="project" />
+    <orderEntry type="library" name="org.mockito:mockito-core:2.2.2" level="project" />
   </component>
 </module>
