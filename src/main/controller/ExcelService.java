@@ -3,7 +3,6 @@ package controller;
 import model.Asset;
 import model.AssetHistory;
 import model.Entry;
-import model.Portfolio;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,10 +13,10 @@ import java.io.IOException;
 
 public class ExcelService {
 
-    private final Portfolio portfolio;
+    private final PortfolioManager portfolioManager;
 
-    public ExcelService(Portfolio portfolio) {
-        this.portfolio = portfolio;
+    public ExcelService(PortfolioManager portfolioManager) {
+        this.portfolioManager = portfolioManager;
     }
     public void createExcel() {
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
@@ -57,7 +56,7 @@ public class ExcelService {
         int rowAssetNumber = rowNumber;
         int rowNumberAssetHistory = rowNumber;
         int rowNumberEntry = rowNumber;
-        for (Asset asset : portfolio.getAssetList()) {
+        for (Asset asset : portfolioManager.getAssetList()) {
             // Write asset
             Row rowAsset = sheet.getRow(rowAssetNumber);
             if(rowAsset == null) {
@@ -85,7 +84,7 @@ public class ExcelService {
                 rowNumberAssetHistory++;
             }
             // Write asset entries
-            for(Entry entry : portfolio.getEntryList(asset)) {
+            for(Entry entry : portfolioManager.getEntryListAsset(asset)) {
                 Row rowEntry = sheet.getRow(rowNumberEntry);
                 if (rowEntry == null) {
                     rowEntry = sheet.createRow(rowNumberEntry);

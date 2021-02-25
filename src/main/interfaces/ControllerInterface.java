@@ -1,13 +1,13 @@
 package interfaces;
 
-import model.Portfolio;
+import controller.PortfolioManager;
 
 public interface ControllerInterface {
 
     void launchPerformanceUI();
     void updateUI();
 
-    Portfolio getPortfolio();
+    PortfolioManager getPortfolioManager();
 
     void importSQL();
     void exportSQL();

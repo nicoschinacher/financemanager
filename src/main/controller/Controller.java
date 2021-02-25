@@ -1,8 +1,6 @@
 package controller;
 
 import interfaces.ControllerInterface;
-import mock.SampleService;
-import model.Portfolio;
 import view.HomeFrame;
 import view.PerfomanceFrame;
 
@@ -15,12 +13,10 @@ public class Controller {
 
     private final HomeFrame homeFrame;
 
-    private Portfolio portfolio;
+    private PortfolioManager portfolioManager;
 
     public Controller() {
-        this.portfolio = new Portfolio();
-        this.portfolio.addAllAsset(SampleService.GENERATE_SAMPLE_ASSETS());
-        this.portfolio.addAllEntry(SampleService.GENERATE_SAMPLE_PORTFOLIO(portfolio.getAssetList()));
+        this.portfolioManager = PortfolioManagerFactory.createPortfolioManager();
         this.controllerInterface = initializeInterface();
         // Initialize UI
         this.homeFrame = new HomeFrame(controllerInterface);
@@ -30,7 +26,7 @@ public class Controller {
         return new ControllerInterface() {
             @Override
             public void launchPerformanceUI() {
-                new PerfomanceFrame(controllerInterface);
+                new PerfomanceFrame(portfolioManager.getPerformanceList());
             }
             @Override
             public void updateUI() {
@@ -39,21 +35,21 @@ public class Controller {
                 }
             }
             @Override
-            public Portfolio getPortfolio() {
-                return portfolio;
+            public PortfolioManager getPortfolioManager() {
+                return portfolioManager;
             }
             @Override
             public void importSQL() {
-                portfolio = SQLService.importSQL();
+                portfolioManager = SQLService.importSQL();
                 updateUI();
             }
             @Override
             public void exportSQL() {
-                SQLService.exportSQL(portfolio);
+                SQLService.exportSQL(portfolioManager);
             }
             @Override
             public void exportExcel() {
-                ExcelService excelService = new ExcelService(portfolio);
+                ExcelService excelService = new ExcelService(portfolioManager);
                 excelService.createExcel();
             }
         };

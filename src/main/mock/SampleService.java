@@ -25,7 +25,7 @@ public class SampleService {
         assetList.add(assetBYND);
         return assetList;
     }
-    public static List<Entry> GENERATE_SAMPLE_PORTFOLIO(List<Asset> assetList) {
+    public static List<Entry> GENERATE_SAMPLE_ENTRIES(List<Asset> assetList) {
         List<Entry> entries = new ArrayList<>();
         entries.add(new Entry(assetList.get(0), "2020-02-16", EntryAction.BUY, 420, 69));
         entries.add(new Entry(assetList.get(0), "2020-04-12", EntryAction.BUY, 69, 420));

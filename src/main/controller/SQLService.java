@@ -8,14 +8,14 @@ public class SQLService {
 
     private static Connection connection;
 
-    public static Portfolio importSQL() {
+    public static PortfolioManager importSQL() {
         initializeConnection();
         return getTables();
     }
-    public static void exportSQL(Portfolio portfolio) {
+    public static void exportSQL(PortfolioManager portfolioManager) {
         initializeConnection();
         createTables();
-        insertTables(portfolio);
+        insertTables(portfolioManager);
     }
     private static void initializeConnection() {
         try {
@@ -24,19 +24,19 @@ public class SQLService {
             System.err.println(exception.getMessage());
         }
     }
-    private static Portfolio getTables() {
-        Portfolio portfolio = new Portfolio();
-        readTableAsset(portfolio);
-        readTableAssetHistory(portfolio);
-        readTableEntry(portfolio);
-        return portfolio;
+    private static PortfolioManager getTables() {
+        PortfolioManager portfolioManager = new PortfolioManager();
+        readTableAsset(portfolioManager);
+        readTableAssetHistory(portfolioManager);
+        readTableEntry(portfolioManager);
+        return portfolioManager;
     }
-    private static void readTableAsset(Portfolio portfolio) {
+    private static void readTableAsset(PortfolioManager portfolioManager) {
         String query = "SELECT SYMBOL, COMPANY, EXCHANGE from ASSET";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                portfolio.addAsset(
+                portfolioManager.addAsset(
                         new Asset(
                             resultSet.getString("SYMBOL"),
                             resultSet.getString("COMPANY"),
@@ -47,13 +47,13 @@ public class SQLService {
             System.err.println(exception.getMessage());
         }
     }
-    private static void readTableAssetHistory(Portfolio portfolio) {
+    private static void readTableAssetHistory(PortfolioManager portfolioManager) {
         String query = "SELECT ASSET.SYMBOL, DATE, PRICE from ASSET, ASSET_HISTORY " +
                 "WHERE ASSET.SYMBOL = ASSET_HISTORY.SYMBOL;";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                Asset asset = portfolio.getAsset(resultSet.getString("SYMBOL"));
+                Asset asset = portfolioManager.getAsset(resultSet.getString("SYMBOL"));
                 asset.addAssetHistory(
                         new AssetHistory(
                                 resultSet.getString("DATE"),
@@ -65,18 +65,18 @@ public class SQLService {
             System.err.println(exception.getMessage());
         }
     }
-    private static void readTableEntry(Portfolio portfolio) {
+    private static void readTableEntry(PortfolioManager portfolioManager) {
         String query = "SELECT ASSET.SYMBOL, COMPANY, EXCHANGE, DATE, ACTION, NUMBER, PRICE from ASSET, ENTRY " +
                 "WHERE ASSET.SYMBOL = ENTRY.SYMBOL;";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                Asset asset = portfolio.getAsset(resultSet.getString("SYMBOL"));
+                Asset asset = portfolioManager.getAsset(resultSet.getString("SYMBOL"));
                 EntryAction entryAction = EntryAction.SELL;
                 if(resultSet.getString("ACTION").equals("BUY")) {
                     entryAction = EntryAction.BUY;
                 }
-                portfolio.addEntry(
+                portfolioManager.addEntry(
                         new Entry(
                                 asset,
                                 resultSet.getString("DATE"),
@@ -94,10 +94,10 @@ public class SQLService {
         createTableAssetHistory();
         createTableEntry();
     }
-    private static void insertTables(Portfolio portfolio) {
-        insertTableAsset(portfolio);
-        insertTableAssetHistory(portfolio);
-        insertTableEntry(portfolio);
+    private static void insertTables(PortfolioManager portfolioManager) {
+        insertTableAsset(portfolioManager);
+        insertTableAssetHistory(portfolioManager);
+        insertTableEntry(portfolioManager);
     }
     private static void createTableAsset() {
         try {
@@ -126,9 +126,9 @@ public class SQLService {
             System.err.println(exception.getMessage());
         }
     }
-    private static void insertTableAsset(Portfolio portfolio) {
+    private static void insertTableAsset(PortfolioManager portfolioManager) {
         try {
-            for(Asset asset : portfolio.getAssetList()) {
+            for(Asset asset : portfolioManager.getAssetList()) {
                 PreparedStatement prepareStatement = connection.prepareStatement("INSERT INTO ASSET VALUES (?, ?, ?);");
                 prepareStatement.setString(1, asset.getSymbol());
                 prepareStatement.setString(2, asset.getCompany());
@@ -139,9 +139,9 @@ public class SQLService {
             System.err.println(exception.getMessage());
         }
     }
-    private static void insertTableAssetHistory(Portfolio portfolio) {
+    private static void insertTableAssetHistory(PortfolioManager portfolioManager) {
         try {
-            for(Asset asset : portfolio.getAssetList()) {
+            for(Asset asset : portfolioManager.getAssetList()) {
                 for (AssetHistory assetHistory : asset.getAssetHistoryList()) {
                     PreparedStatement prepareStatement = connection.prepareStatement("INSERT INTO ASSET_HISTORY VALUES (?, ?, ?);");
                     prepareStatement.setString(1, asset.getSymbol());
@@ -154,10 +154,10 @@ public class SQLService {
             System.err.println(exception.getMessage());
         }
     }
-    private static void insertTableEntry(Portfolio portfolio) {
+    private static void insertTableEntry(PortfolioManager portfolioManager) {
         try {
-            for(Asset asset : portfolio.getAssetList()) {
-                for (Entry entry : portfolio.getEntryList(asset)) {
+            for(Asset asset : portfolioManager.getAssetList()) {
+                for (Entry entry : portfolioManager.getEntryListAsset(asset)) {
                     PreparedStatement prepareStatement = connection.prepareStatement("INSERT INTO ENTRY VALUES (?, ?, ?, ?, ?);");
                     prepareStatement.setString(1, asset.getSymbol());
                     prepareStatement.setString(2, entry.getDate());
