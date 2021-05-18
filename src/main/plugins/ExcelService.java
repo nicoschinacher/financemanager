@@ -1,5 +1,6 @@
-package controller;
+package plugins;
 
+import controller.PortfolioManager;
 import model.Asset;
 import model.AssetHistory;
 import model.Entry;

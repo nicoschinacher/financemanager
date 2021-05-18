@@ -1,5 +1,6 @@
-package controller;
+package plugins;
 
+import controller.PortfolioManager;
 import model.*;
 
 import java.sql.*;
